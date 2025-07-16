@@ -3,16 +3,27 @@
 import { motion } from "motion/react"
 import Image from "next/image"
 import { useEffect, useState } from "react";
+import { Fireworks } from "fireworks/lib/react";
 
-const balloons = [
-  { left: "10%", delay: 0 },
-  { left: "30%", delay: 0.5 },
-  { left: "50%", delay: 1 },
-  { left: "70%", delay: 1.5 },
-  { left: "85%", delay: 0.8 },
+const balloonColors = [
+  "#f87171", // red
+  "#fbbf24", // yellow
+  "#34d399", // green
+  "#60a5fa", // blue
+  "#a78bfa", // purple
+  "#f472b6", // pink
+  "#facc15", // gold
 ];
 
-function Balloon({ left, delay }: { left: string; delay: number }) {
+const balloons = [
+  { left: "10%", delay: 0, color: balloonColors[0] },
+  { left: "30%", delay: 0.5, color: balloonColors[1] },
+  { left: "50%", delay: 1, color: balloonColors[2] },
+  { left: "70%", delay: 1.5, color: balloonColors[3] },
+  { left: "85%", delay: 0.8, color: balloonColors[4] },
+];
+
+function Balloon({ left, delay, color }: { left: string; delay: number; color: string }) {
   return (
     <motion.div
       initial={{ y: 400, opacity: 0 }}
@@ -20,7 +31,7 @@ function Balloon({ left, delay }: { left: string; delay: number }) {
       transition={{
         duration: 2.5,
         delay,
-        type: "tween", // changed from spring to tween
+        type: "tween",
         ease: "easeInOut",
         repeat: Infinity,
         repeatType: "reverse",
@@ -29,9 +40,7 @@ function Balloon({ left, delay }: { left: string; delay: number }) {
       className="absolute bottom-0"
     >
       <svg width="60" height="100" viewBox="0 0 60 100" fill="none">
-        <ellipse cx="30" cy="40" rx="28" ry="35" fill="#f87171" />
-        <ellipse cx="30" cy="40" rx="18" ry="25" fill="#fbbf24" opacity="0.7" />
-        <ellipse cx="30" cy="40" rx="10" ry="15" fill="#34d399" opacity="0.7" />
+        <ellipse cx="30" cy="40" rx="28" ry="35" fill={color} />
         <path d="M30 75 Q32 90 30 100 Q28 90 30 75" stroke="#555" strokeWidth="2" fill="none" />
       </svg>
     </motion.div>
@@ -73,69 +82,33 @@ function Confetti() {
   );
 }
 
-function Fireworks() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) return null;
-  // Simple fireworks: animate SVG bursts at random positions
-  const fireworkColors = ["#f87171", "#fbbf24", "#34d399", "#60a5fa", "#a78bfa", "#f472b6", "#facc15"];
-  const fireworks = Array.from({ length: 5 });
-  return (
-    <div className="absolute inset-0 pointer-events-none z-0">
-      {fireworks.map((_, i) => {
-        const left = Math.random() * 80 + 10; // 10% to 90%
-        const top = Math.random() * 40 + 5; // 5% to 45%
-        const color = fireworkColors[i % fireworkColors.length];
-        return (
-          <motion.svg
-            key={i}
-            width="120"
-            height="120"
-            viewBox="0 0 120 120"
-            style={{ position: "absolute", left: `${left}%`, top: `${top}%` }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
-            transition={{
-              duration: 2.5 + Math.random(),
-              delay: Math.random() * 2,
-              repeat: Infinity,
-              repeatType: "loop",
-              ease: "easeInOut",
-            }}
-          >
-            {[...Array(8)].map((_, j) => (
-              <line
-                key={j}
-                x1="60"
-                y1="60"
-                x2={60 + 50 * Math.cos((j * Math.PI) / 4)}
-                y2={60 + 50 * Math.sin((j * Math.PI) / 4)}
-                stroke={color}
-                strokeWidth="4"
-                strokeLinecap="round"
-              />
-            ))}
-            <circle cx="60" cy="60" r="10" fill={color} fillOpacity="0.7" />
-          </motion.svg>
-        );
-      })}
-    </div>
-  );
-}
-
 export default function Home() {
+  // Use fixed pixel values for fireworks positions for consistent placement
+  const fireworkPositions = [
+    { top: "10%", left: "20%" },
+    { top: "30%", left: "70%" },
+    { top: "60%", left: "40%" },
+    { top: "80%", left: "80%" },
+    { top: "50%", left: "10%" },
+  ];
+
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-pink-100 to-yellow-100 overflow-hidden">
-      {/* Fireworks */}
-      <Fireworks />
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-500 to-green-500 overflow-hidden">
+      <Fireworks
+          count={1}
+          interval={8000}
+          colors={['#cc3333', '#4CAF50', '#81C784', '#fbbf24', '#a78bfa']}
+          className="absolute w-[300] h-[300] left-50 top-30 z-1"
+          style={{
+            pointerEvents: "none",
+          }}
+      />
       {/* Confetti */}
       <Confetti />
       {/* Balloons */}
       <div className="absolute inset-0 pointer-events-none">
         {balloons.map((b, i) => (
-          <Balloon key={i} left={b.left} delay={b.delay} />
+          <Balloon key={i} left={b.left} delay={b.delay} color={b.color} />
         ))}
       </div>
       {/* Main Message */}
@@ -186,9 +159,14 @@ export default function Home() {
       >
         Tian Tian!
       </motion.span>
-      <span className="font-black text-3xl text-black font-normal mb-5">
-      - from Tony
-      </span>
+      <motion.span
+        className="font-black text-3xl text-black font-normal mb-5"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2.2, duration: 0.8, type: "tween" }}
+      >
+        - from Tony
+      </motion.span>
       <motion.p
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
