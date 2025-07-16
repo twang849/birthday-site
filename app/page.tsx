@@ -143,7 +143,7 @@ export default function Home() {
         })()}
       </motion.h1>
       <motion.span
-        className="md:text-8xl lg:text-9xl font-extrabold text-black mt-5"
+        className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-white mt-5"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 0.8, type: "tween" }}
