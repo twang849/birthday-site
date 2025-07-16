@@ -143,13 +143,15 @@ export default function Home() {
         })()}
       </motion.h1>
       <motion.span
-        className="text-9xl font-extrabold text-black mt-5"
-        initial={{ color: "#000" }}
+        className="md:text-8xl lg:text-9xl font-extrabold text-black mt-5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.2, duration: 0.8, type: "tween" }}
       >
         Tian Tian!
       </motion.span>
       <motion.span
-        className="font-black text-3xl text-black font-normal mb-5"
+        className="font-black text-1xl lg:text-3xl text-black font-normal mb-5"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2.2, duration: 0.8, type: "tween" }}
