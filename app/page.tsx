@@ -73,9 +73,63 @@ function Confetti() {
   );
 }
 
+function Fireworks() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+  // Simple fireworks: animate SVG bursts at random positions
+  const fireworkColors = ["#f87171", "#fbbf24", "#34d399", "#60a5fa", "#a78bfa", "#f472b6", "#facc15"];
+  const fireworks = Array.from({ length: 5 });
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0">
+      {fireworks.map((_, i) => {
+        const left = Math.random() * 80 + 10; // 10% to 90%
+        const top = Math.random() * 40 + 5; // 5% to 45%
+        const color = fireworkColors[i % fireworkColors.length];
+        return (
+          <motion.svg
+            key={i}
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
+            style={{ position: "absolute", left: `${left}%`, top: `${top}%` }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
+            transition={{
+              duration: 2.5 + Math.random(),
+              delay: Math.random() * 2,
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: "easeInOut",
+            }}
+          >
+            {[...Array(8)].map((_, j) => (
+              <line
+                key={j}
+                x1="60"
+                y1="60"
+                x2={60 + 50 * Math.cos((j * Math.PI) / 4)}
+                y2={60 + 50 * Math.sin((j * Math.PI) / 4)}
+                stroke={color}
+                strokeWidth="4"
+                strokeLinecap="round"
+              />
+            ))}
+            <circle cx="60" cy="60" r="10" fill={color} fillOpacity="0.7" />
+          </motion.svg>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-pink-100 to-yellow-100 overflow-hidden">
+      {/* Fireworks */}
+      <Fireworks />
       {/* Confetti */}
       <Confetti />
       {/* Balloons */}
@@ -92,7 +146,7 @@ export default function Home() {
         className="z-10 text-5xl md:text-9xl font-extrabold drop-shadow-lg text-center mt-20 flex flex-wrap justify-center"
       >
         {(() => {
-          const text = "Happy Birthday";
+          const text = "Happy 23rd Birthday";
           const colors = [
             "text-red-500",
             "text-orange-500",
@@ -111,14 +165,12 @@ export default function Home() {
                 className={color}
                 initial={{ y: -80, scale: 0.5, opacity: 0 }}
                 animate={{ y: 0, scale: 1.2, opacity: 1 }}
-                whileHover={{ scale: 1.4, rotate: [0, 10, -10, 0] }}
+                whileHover={{ scale: 1.4 }}
                 transition={{
                   type: "spring",
                   stiffness: 400,
                   damping: 12,
                   delay: 0.2 + i * 0.08,
-                  // Add a custom transition for whileHover
-                  rotate: { type: "tween", duration: 0.4, ease: "easeInOut" },
                   scale: { type: "tween", duration: 0.4, ease: "easeInOut" },
                 }}
               >
@@ -134,6 +186,9 @@ export default function Home() {
       >
         Tian Tian!
       </motion.span>
+      <span className="font-black text-3xl text-black font-normal mb-5">
+      - from Tony
+      </span>
       <motion.p
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
