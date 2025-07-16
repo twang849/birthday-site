@@ -1,9 +1,7 @@
 "use client"
 
 import { motion } from "motion/react"
-import Image from "next/image"
 import { useEffect, useState } from "react";
-import { Fireworks } from "fireworks/lib/react";
 
 const balloonColors = [
   "#f87171", // red
@@ -94,15 +92,6 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-500 to-green-500 overflow-hidden">
-      <Fireworks
-          count={1}
-          interval={8000}
-          colors={['#cc3333', '#4CAF50', '#81C784', '#fbbf24', '#a78bfa']}
-          className="absolute w-[300] h-[300] left-50 top-30 z-1"
-          style={{
-            pointerEvents: "none",
-          }}
-      />
       {/* Confetti */}
       <Confetti />
       {/* Balloons */}
